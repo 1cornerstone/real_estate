@@ -19,6 +19,8 @@ Test
 
 Result
 
+![alt text](https://github.com/1cornerstone/take-home-test/blob/main/screenshot/screen-recording.mov)
+
 ![alt text](https://github.com/1cornerstone/take-home-test/blob/main/screenshot/Screenshot%202024-05-22%20at%201.42.42%E2%80%AFPM.png)
 
 ![alt text](https://github.com/1cornerstone/take-home-test/blob/main/screenshot/Screenshot%202024-05-22%20at%201.42.55%E2%80%AFPM.png)
