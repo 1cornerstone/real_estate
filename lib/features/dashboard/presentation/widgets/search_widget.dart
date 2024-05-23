@@ -308,7 +308,7 @@ class _SearchWidgetState extends State<SearchWidget> {
 
               TweenAnimationBuilder(
                 tween: Tween<double>(begin: 0, end: 27, ),
-                duration: const Duration(milliseconds: 800),
+                duration: const Duration(seconds: 1),
                 builder: (ctx, value, __){
                   return RoundContainer(
                       color: Colors.white, padding: 10,
@@ -335,7 +335,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                   children: [
                     TweenAnimationBuilder(
                       tween: Tween<double>(begin: 0, end: 20, ),
-                      duration: const Duration(milliseconds: 800),
+                      duration: const Duration(seconds: 1),
                       builder: (ctx, value, __){
                         return RoundContainer(
                             color: Colors.white38,
@@ -386,7 +386,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                     const SizedBox(height: 5,),
                     TweenAnimationBuilder(
                       tween: Tween<double>(begin: 0, end: 20, ),
-                      duration: const Duration(milliseconds: 800),
+                      duration: const Duration(seconds: 1),
                       builder: (ctx, value, __){
                         return RoundContainer(
                             color: Colors.white38,
@@ -402,7 +402,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                 ),
 
                 Container(
-
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.white38,

@@ -16,7 +16,7 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
+class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
   int pageIndex = 2;
   late PageController pageController;
 
@@ -28,27 +28,31 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
      Container()
    ];
 
-  late AnimationController bottomBarAnimationController;
-  late Animation<double> bottomBarAnimation;
+
+  late AnimationController controller;
+  late Animation<double> animation;
 
   @override
   void initState() {
-    pageController = PageController(initialPage: pageIndex);
 
-    bottomBarAnimationController = AnimationController(duration: const Duration(milliseconds: 900 ), vsync: this);
-    bottomBarAnimation = Tween<double>(begin: 0, end: 40.h)
-        .animate(bottomBarAnimationController);
-
-    Future.delayed(const Duration(seconds: 6),(){
-      bottomBarAnimationController.forward();
+    controller = AnimationController(duration: const Duration(milliseconds: 900 ), vsync: this);
+    animation = Tween<double>(begin: 0, end: 40)
+        .animate(controller)..addListener(() {
     });
 
+    Future.delayed(const Duration(seconds: 6),(){
+      controller.forward();
+    });
+
+    pageController = PageController(initialPage: pageIndex);
     super.initState();
   }
 
   @override
   void dispose() {
+    controller.dispose();
     pageController.dispose();
+
     super.dispose();
   }
 
@@ -62,13 +66,14 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           children: pages,
         ),
         bottomNavigationBar: AnimatedBuilder(
-          animation: bottomBarAnimation,
+          animation: animation,
           builder: (_,__){
-            return bottomBarAnimation.value == 0 ? const SizedBox.shrink() : Container(
+
+            return animation.value == 0 ? const SizedBox.shrink() : Container(
               margin: EdgeInsets.only(
                 left: 40.w,
                 right: 40.w,
-                bottom: bottomBarAnimation.value,
+                bottom: animation.value,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
@@ -80,10 +85,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                 children: [
                   navItem(AppStrings.searchIcon, isSelected: pageIndex == 0,
                       onTap: () {
-                        pageController.animateToPage(
+                        pageController.jumpToPage(
                           0,
-                          duration: const Duration(microseconds: 300),
-                          curve: Curves.linear,
                         );
                         setState(() {
                           pageIndex = 0;
@@ -92,10 +95,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                   navItem(AppStrings.messageIcon),
                   navItem(AppStrings.homeIcon, isSelected: pageIndex == 2,
                       onTap: () {
-                        pageController.animateToPage(
+                        pageController.jumpToPage(
                           2,
-                          duration: const Duration(microseconds: 300),
-                          curve: Curves.linear,
+                          // duration: const Duration(microseconds: 300),
+                          // curve: Curves.linear,
                         );
 
                         setState(() {
