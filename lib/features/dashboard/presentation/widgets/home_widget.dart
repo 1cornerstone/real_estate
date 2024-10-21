@@ -51,7 +51,6 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin{
         // start place animation and buyRentAnimation
         placeAnimationController.forward();
         buyAndRentAnimationController.forward();
-
       }
     });
 
@@ -170,7 +169,7 @@ class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin{
                     animationController: houseAnimationController,
                     scrollEvent: (){
                       scrollController.animateTo(180.0,
-                          duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                          duration: const Duration(seconds: 1), curve: Curves.easeIn);
                     },
                   ),
                 ],

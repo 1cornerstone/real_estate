@@ -18,51 +18,51 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
   int pageIndex = 2;
-  late PageController pageController;
-
-   List<Widget> pages = [
-     const SearchWidget(),
-     Container(),
-     const HomeWidget(),
-     Container(),
-     Container()
-   ];
 
 
   late AnimationController controller;
   late Animation<double> animation;
+  late PageController pageController;
 
   @override
   void initState() {
 
-    controller = AnimationController(duration: const Duration(milliseconds: 900 ), vsync: this);
-    animation = Tween<double>(begin: 0, end: 40)
-        .animate(controller)..addListener(() {
-    });
+    controller = AnimationController(duration: const Duration(seconds: 1 ), vsync: this);
+    animation = Tween<double>(begin: 0, end: 30)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn));
 
     Future.delayed(const Duration(seconds: 6),(){
       controller.forward();
     });
 
-    pageController = PageController(initialPage: pageIndex);
+    pageController = PageController(
+        initialPage: pageIndex,
+      viewportFraction: 1
+    );
     super.initState();
   }
 
   @override
   void dispose() {
     controller.dispose();
-    pageController.dispose();
-
     super.dispose();
   }
+
+  List<Widget> pages = [
+    const SearchWidget(),
+    Container(),
+    const HomeWidget(),
+    Container(),
+    Container()
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         extendBody: true,
         body: PageView(
-          physics: const NeverScrollableScrollPhysics(),
           controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
           children: pages,
         ),
         bottomNavigationBar: AnimatedBuilder(
@@ -85,9 +85,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 children: [
                   navItem(AppStrings.searchIcon, isSelected: pageIndex == 0,
                       onTap: () {
-                        pageController.jumpToPage(
-                          0,
-                        );
+                        pageIndex = 0;
+                    pageController.jumpToPage(pageIndex);
                         setState(() {
                           pageIndex = 0;
                         });
@@ -95,13 +94,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   navItem(AppStrings.messageIcon),
                   navItem(AppStrings.homeIcon, isSelected: pageIndex == 2,
                       onTap: () {
-                        pageController.jumpToPage(
-                          2,
-                          // duration: const Duration(microseconds: 300),
-                          // curve: Curves.linear,
-                        );
-
-                        setState(() {
+                        pageIndex = 2;
+                        pageController.jumpToPage(pageIndex);
+                    setState(() {
                           pageIndex = 2;
                         });
                       }),

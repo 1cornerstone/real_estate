@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate/core/constant/color.dart';
 import 'package:real_estate/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:real_estate/features/dashboard/presentation/widgets/animation_widgets/house_animated_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       builder: (ctx,_)=> MaterialApp(
           title: 'Real Estate',
           themeMode: ThemeMode.dark,
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                   seedColor: Colors.orange,
@@ -27,8 +29,13 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
               fontFamily: 'Sen',
           ),
-          home: const DashboardScreen()
+          home: const
+          // EasyAnimatedOffset()
+          DashboardScreen()
       ),
     );
   }
 }
+
+
+

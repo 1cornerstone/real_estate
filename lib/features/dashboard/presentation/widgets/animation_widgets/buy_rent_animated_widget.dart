@@ -59,9 +59,9 @@ class _BuyAndRentAnimatedWidgetState extends State<BuyAndRentAnimatedWidget> wit
   @override
   void dispose() {
 
-    // sizeAnimationController.dispose();
-    // buyCountTextAnimationController.dispose();
-    // rentCountTextAnimationController.dispose();
+    sizeAnimationController.dispose();
+    buyCountTextAnimationController.dispose();
+    rentCountTextAnimationController.dispose();
     super.dispose();
   }
   
@@ -94,7 +94,7 @@ class _BuyAndRentAnimatedWidgetState extends State<BuyAndRentAnimatedWidget> wit
                         fontSize: 16.sp
                     ),
                   ),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 12.h,),
                   Column(
                     children: [
                       AnimatedBuilder(
@@ -140,7 +140,7 @@ class _BuyAndRentAnimatedWidgetState extends State<BuyAndRentAnimatedWidget> wit
                         fontSize: 16.sp
                     ),
                   ),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   Column(
                     children: [
                       AnimatedBuilder(
@@ -151,7 +151,7 @@ class _BuyAndRentAnimatedWidgetState extends State<BuyAndRentAnimatedWidget> wit
                               style: TextStyle(
                                   fontFamily: 'DoHyeon',
                                   color: Theme.of(context).colorScheme.secondary,
-                                  fontSize: 35.sp,
+                                  fontSize: 34.sp,
                                   fontWeight: FontWeight.w700
                               ),
                             );

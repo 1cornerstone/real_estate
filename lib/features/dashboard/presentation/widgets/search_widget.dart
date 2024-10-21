@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:real_estate/core/constant/strings.dart';
 import 'package:real_estate/core/shared_widget/app_texfield.dart';
 import 'package:real_estate/core/shared_widget/round_container.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 
 
@@ -24,10 +25,33 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   late GoogleMapController googleMapController;
 
-  Map<MarkerId, Marker> markers = {};
+  final duration = 800;
 
-  BitmapDescriptor fromMaker = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor toMaker = BitmapDescriptor.defaultMarker;
+  Set<Marker> markers = {};
+
+  initMarkers() {
+
+     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      markers = {};
+
+      final latlongs = [
+        const LatLng(6.616865, 0.708472),
+        const LatLng(6.586465, 0.508472),
+        const LatLng(6.416865, 0.478072),
+        const LatLng(6.316565, 0.578072),
+      ];
+
+      for(int i =0; i < latlongs.length; i++ ){
+        markers.add(Marker(
+            markerId: MarkerId("$i"),
+            position: latlongs[i],
+            icon: await markerWidget().toBitmapDescriptor(
+            logicalSize: const Size(40, 40), imageSize: const Size(100, 100)),
+        ));
+    }
+      setState(() {});
+    });
+  }
 
   List<Map<String, dynamic>> option = [
     {
@@ -47,26 +71,12 @@ class _SearchWidgetState extends State<SearchWidget> {
     },
   ];
 
-  int selectedMenuIndex = 0;
+  int selectedMenuIndex = 1;
 
   @override
   void initState() {
+    initMarkers();
     super.initState();
-  }
-
-  setMakerIcon() async{
-    // BitmapDescriptor.fromAssetImage(const ImageConfiguration(devicePixelRatio: 2.0), AppStrings.fromIndicatorImage).then((value){
-    //   setState(() {
-    //     fromMaker = value;
-    //   });
-    // });
-    //
-    // BitmapDescriptor.fromAssetImage(const ImageConfiguration(devicePixelRatio: 2.0), AppStrings.toIndicatorImage).then((value){
-    //   setState(() {
-    //     toMaker = value;
-    //   });
-    // });
-
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -263,6 +273,28 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   }
 
+
+  Widget markerWidget(){
+    return Container(
+      height: 50,
+      width: 50,
+      padding: const EdgeInsets.all(10),
+      decoration: const BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+            bottomRight: Radius.circular(12),
+          )
+      ),
+      child: const Icon(
+        Icons.list_alt_rounded,
+        color: Colors.white,
+        size: 25,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -277,15 +309,10 @@ class _SearchWidgetState extends State<SearchWidget> {
           scrollGesturesEnabled: true,
           zoomGesturesEnabled: true,
           initialCameraPosition: const CameraPosition(
-            target: LatLng(6.616865,.508072),
+            target: LatLng(6.616865, 0.508072),
             zoom: 10,
           ),
-          // markers: {
-            // Marker(
-            //     markerId: const MarkerId('to'),
-            //     icon: toMaker,
-            //     position: toPosition),
-          // },
+          markers: markers
         ),
 
         Positioned(
@@ -294,27 +321,29 @@ class _SearchWidgetState extends State<SearchWidget> {
           top: kToolbarHeight,
           child: Row(
             children: [
-              TweenAnimationBuilder(
-                tween: Tween<double>(begin: 0, end: 260.w, ),
-                duration: const Duration(seconds: 1),
-                builder: (ctx, value, __){
-                  return SizedBox(
-                      height: 50,
-                      width: value,
-                      child: const AppTextField());
-                },
+              Expanded(
+                child: TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 200, end: 0.w, ),
+                  duration: const Duration(milliseconds: 600),
+                  builder: (ctx, value, __){
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: value),
+                        height: 50,
+                        child: const AppTextField());
+                  },
+                ),
               ),
               const SizedBox(width: 10,),
 
               TweenAnimationBuilder(
-                tween: Tween<double>(begin: 0, end: 27, ),
-                duration: const Duration(seconds: 1),
+                tween: Tween<double>(begin: 0, end: 12, ),
+                duration:  Duration(milliseconds: duration),
                 builder: (ctx, value, __){
                   return RoundContainer(
-                      color: Colors.white, padding: 10,
+                      color: Colors.white, padding: value ,
                       child: SvgPicture.asset(
                         AppStrings.filterIcon,
-                        height: value,
+                        height: value * 2,
                         // color: ,
                       ));
                 },
@@ -334,18 +363,14 @@ class _SearchWidgetState extends State<SearchWidget> {
                 Column(
                   children: [
                     TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 20, ),
-                      duration: const Duration(seconds: 1),
+                      tween: Tween<double>(begin: 0, end: 15, ),
+                      duration:  Duration(milliseconds: duration),
                       builder: (ctx, value, __){
                         return RoundContainer(
                             color: Colors.white38,
-                            padding: 0,
+                            padding: value,
                             child: PopupMenuButton<int>(
-                              icon: SvgPicture.asset(
-                                option[selectedMenuIndex]['icon'],
-                                color: Colors.white,
-                                height: value,
-                              ),
+                              // padding: EdgeInsets.zero,
                               onSelected: (index) {
                                 selectedMenuIndex = index;
                                 setState(() {});
@@ -376,8 +401,13 @@ class _SearchWidgetState extends State<SearchWidget> {
                               ),
                               offset: const Offset(10,-160),
                               elevation: 0,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(15.0))
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              // padding: EdgeInsets.zero,
+                              child: SvgPicture.asset(
+                                option[selectedMenuIndex]['icon'],
+                                color: Colors.white,
+                                height: value * 1.5,
                               ),
                             )
                         );
@@ -385,43 +415,56 @@ class _SearchWidgetState extends State<SearchWidget> {
                     ),
                     const SizedBox(height: 5,),
                     TweenAnimationBuilder(
-                      tween: Tween<double>(begin: 0, end: 20, ),
-                      duration: const Duration(seconds: 1),
+                      tween: Tween<double>(begin: 0, end: 15, ),
+                      duration:  Duration(milliseconds: duration),
                       builder: (ctx, value, __){
-                        return RoundContainer(
-                            color: Colors.white38,
-                            padding: 13,
-                            child: SvgPicture.asset(
-                              AppStrings.navigatorIcon,
-                              color: Colors.white70,
-                              height: value,
-                            ));
+                        return GestureDetector(
+                          onTap: (){
+                            initMarkers();
+                          },
+                          child: RoundContainer(
+                              color: Colors.white38,
+                              padding: value,
+                              child: SvgPicture.asset(
+                                AppStrings.navigatorIcon,
+                                color: Colors.white70,
+                                height: value * 1.5,
+                              )),
+                        );
                       },
                     ),
                   ],
                 ),
 
-                Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white38,
-                        borderRadius: BorderRadius.circular(40)
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.format_align_left_outlined,
-                          color: Colors.white54,
+                TweenAnimationBuilder(
+                  tween: Tween<double>(begin: 0, end: 14, ),
+                  duration:  Duration(milliseconds: duration),
+                  builder: (ctx, value, __){
+                    return  Container(
+                        padding: EdgeInsets.all(value),
+                        decoration: BoxDecoration(
+                            color: Colors.white38,
+                            borderRadius: BorderRadius.circular(40)
                         ),
-                        SizedBox(width: 7,),
-                        Text(
-                          AppStrings.listOfVariantText,
-                          style: TextStyle(
-                              color: Colors.white70
-                          ),
-                        )
-                      ],
-                    ))
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.format_align_left_outlined,
+                              color: Colors.white54,
+                              size: value * 1.6,
+                            ),
+                            const SizedBox(width: 7,),
+                            Text(
+                              AppStrings.listOfVariantText,
+                              style: TextStyle(
+                                  color: Colors.white70,
+                                fontSize: value
+                              ),
+                            )
+                          ],
+                        ));
+                  },
+                ),
 
               ],
             ))
